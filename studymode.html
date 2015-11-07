@@ -19,13 +19,16 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="scripts/vendor/jquery.min.js"><\/script>')</script>
     </head>
-    <body id="index-page">
-        <div class="container">
-            <div class="hero-unit">
-                <h1>Guess Who!</h1>
-                <a href="quizmode.html" class="btn btn-info">Quiz Mode</a>
-                <a href="studymode.html" class="btn btn-info">Study Mode</a>
-            </div>
-        </div>   
+    <body id="quiz-page">
+    	<div id="question-wrapper">
+            <h1>Guess Who!</h1>
+        </div>
+        <p class="notification">Press any key to continue.</p>
+        <a href="quizmode.html" class="mode btn btn-info">Quiz Mode</a>
+        <div id="face-wrapper">
+            <div id="flashcard"></div>
+        </div>
+
+        <script type="text/babel" src="scripts/main.js"></script>
     </body>
 </html>

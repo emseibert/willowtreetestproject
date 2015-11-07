@@ -5,7 +5,9 @@ var FlashcardContent = React.createClass({
 		  	dataType: 'json',
 		  	cache: false,
 		  	success: function(data) {
-		    	this.setState({data: data});
+		    	this.setState({
+		    		data: data
+		    	});
 		 	 }.bind(this),
 		  	error: function(xhr, status, err) {
 		   		console.error(this.props.url, status, err.toString());
@@ -13,14 +15,36 @@ var FlashcardContent = React.createClass({
 		});
 	},
 	getInitialState: function() {
-	    return {
-	    	data: []
-	    };
+	    return {data: []};
 	},
 	componentDidMount: function() {
 		this.loadEmployeesFromServer();
   	},
-  	handleSubmit: function(e) {
+	render: function () {
+		var listOfEmployees = this.state.data;
+		var randomEmployee = listOfEmployees[Math.floor(Math.random() * listOfEmployees.length)];
+		var pathname = window.location.pathname.split("/").length > 0 ? window.location.pathname.split("/")[1] : "";
+		var cssName = pathname.indexOf("quiz") > -1 ? "flashcardName hidden" : "flashcardName";
+		var cssForm = pathname.indexOf("quiz") > -1 ? "flashcardForm" : "flashcardName hidden";
+
+		if (pathname.indexOf('study') > -1) {
+			$(window).keypress(function(e) {
+		       location.reload();
+	  		});
+		}
+
+		return (
+			<div className="flashcard" id="face-wrapper">
+				<h3 className={cssName}> {randomEmployee ? randomEmployee.name : ""}</h3>
+				<EmployeePicture employee={randomEmployee} style={this.state.pictureStyling}/>
+				<EmployeeQuizForm employee={randomEmployee ? randomEmployee.name : ""} style={cssForm} />
+			</div>
+		);
+	}
+});
+
+var EmployeeQuizForm = React.createClass({
+	handleSubmit: function(e) {
   		e.preventDefault();
   		var name = this.refs.name.value.toLowerCase().trim();
   		var correctAnswer = this.refs.answer.value.toLowerCase().trim();
@@ -29,15 +53,12 @@ var FlashcardContent = React.createClass({
   		}
 
   		if (name === correctAnswer) {
-  			console.log("CORRECT");
   			$("article span")[0].className = "name right";
   		} else {
-  			console.log("INCORRECT");
   			$("article span")[0].className = "name wrong";
   		}
 
   		$(".notification")[0].className = "notification visible";
-
   		this.refs.name.value = '';
   		this.refs.answer.value = '';
   		
@@ -48,18 +69,12 @@ var FlashcardContent = React.createClass({
   		return;
   	},
 	render: function () {
-		//choose random employee
-		var listOfEmployees = this.state.data;
-		var randomEmployee = listOfEmployees[Math.floor(Math.random() * listOfEmployees.length)];
 		return (
-			<div className="flashcard" id="face-wrapper">
-				<EmployeePicture employee={randomEmployee} style={this.state.pictureStyling}/>
-				<form className="flashcardForm" onSubmit={this.handleSubmit}>
-					<input type="text" placeholder="Enter Name" ref="name"/>
-					<input type="hidden" ref="answer" value={randomEmployee ? randomEmployee.name : ""} />
-					<input type="submit" value="Check" />
-				</form>
-			</div>
+			<form className={this.props.style} onSubmit={this.handleSubmit}>
+				<input type="text" className="form-control" placeholder="Enter Name" ref="name"/>
+				<input type="hidden" ref="answer" value={this.props.employee ? this.props.employee.name : ""} />
+				<input type="submit" className="btn btn-info" value="Check" />
+			</form>
 		);
 	}
 });
@@ -75,7 +90,8 @@ var EmployeePicture = React.createClass({
 	}
 });
 
-ReactDOM.render(
-		<FlashcardContent url="http://namegame.willowtreemobile.com:2000" />,
-		document.getElementById('flashcard')
+ReactDOM.render(	
+	<FlashcardContent url="http://namegame.willowtreemobile.com:2000"/>,
+	document.getElementById('flashcard')
 );
+

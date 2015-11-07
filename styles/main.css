@@ -27,7 +27,8 @@ h2 {
     width: 20%;
     cursor: pointer;
     position: relative;
-    float: left;
+    display: block;
+    float: none;
     padding: 5px;
 }
 
@@ -49,7 +50,6 @@ h2 {
     padding: 10px;
     text-align: center;
     color: white;
-    display: block;
 }
 
 
@@ -62,6 +62,32 @@ h2 {
     right: 0;
 }
 
+.flashcard {
+	width: 100%;
+	float: center;
+	margin-left: 40%;
+}
+
+.flashcardForm {
+	display: block;
+    float: none;
+}
+
+.flashcardName {
+	margin-left: 50px;
+}
+
+.notification {
+	margin-left: 43%;
+}
+button.btn, input[type="submit"].btn {
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+
+.mode {
+	margin-left: 46%;
+}
 .hidden h2 {
     bottom: -10px!important;
 }
@@ -89,6 +115,11 @@ h2 {
 
 #question-wrapper h1 {
     font-size: 36px;
+}
+
+#switchBtn {
+	float: center;
+	margin-left: 43%;
 }
 
 .refresh {
