@@ -21,15 +21,7 @@ var data = [
   }
 ];
 
-var	QuestionContent = React.createClass({
-  render: function() {
-    return (
-       	<h1>Who is BLANK?</h1>
-    );
-  }
-});
-
-var PictureContent = React.createClass({
+var FlashcardContent = React.createClass({
 	loadEmployeesFromServer: function() {
 		$.ajax({
 		  	url: this.props.url,
@@ -49,45 +41,54 @@ var PictureContent = React.createClass({
 	componentDidMount: function() {
 		this.loadEmployeesFromServer();
   	},
+  	handleSubmit: function(e) {
+  		e.preventDefault();
+  		var name = this.refs.name.value.toLowerCase().trim();
+  		var correctAnswer = this.refs.answer.value.toLowerCase().trim();
+  		if (!name) {
+  			return;
+  		}
+
+  		if (name === correctAnswer) {
+  			console.log("CORRECT");
+  		} else {
+  			console.log("INCORRECT");
+  		}
+
+  		this.refs.name.value = '';
+  		this.refs.answer.value = '';
+  		
+  		return;
+  	},
 	render: function () {
+		//choose random employee
+		var listOfEmployees = this.state.data;
+		var randomEmployee = listOfEmployees[Math.floor(Math.random() * listOfEmployees.length)];
+		console.log(listOfEmployees.length);
 		return (
-			<FiveOptions data={this.state.data}/>
-		);	
+			<div className="flashcard">
+				<EmployeePicture employee={randomEmployee}/>
+				<form className="flashcardForm" onSubmit={this.handleSubmit}>
+					<input type="text" placeholder="Enter Name" ref="name"/>
+					<input type="hidden" ref="answer" value={randomEmployee ? randomEmployee.name : ""} />
+					<input type="submit" value="Check" />
+				</form>
+			</div>
+		);
 	}
 });
 
-var FiveOptions = React.createClass({
-  render: function() {
-    var employeeList = this.props.data.map(function (employee) {
-    	return (
-    		<Employee key={employee.name} name={employee.name} url={employee.url} />
-    	);
-        
-    });
-    return (
-    	<div className="pics">
-    		{employeeList}
-    	</div>
-	);
-  }
-});
-
-var Employee = React.createClass({
+var EmployeePicture = React.createClass({
 	render: function() {
 		return (
 			<div className="employee">
-				<img src={this.props.url} />
+				<img src={this.props.employee ? this.props.employee.url : ""} />
 			</div>
 		);
 	}
 });
 
 ReactDOM.render(
-  <QuestionContent />,
-  document.getElementById('question')
-);
-
-ReactDOM.render(
-	<PictureContent url="http://namegame.willowtreemobile.com:2000" />,
-	document.getElementById('pictures')
+		<FlashcardContent url="http://namegame.willowtreemobile.com:2000" />,
+		document.getElementById('flashcard')
 );
