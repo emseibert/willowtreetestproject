@@ -1,26 +1,3 @@
-var data = [
-  {
-    "name": "Andrew Harris",
-    "url": "http://willowtreeapps.com/wp-content/uploads/2014/12/headshot_andrew_harris1.jpg"
-  },
-  {
-    "name": "Abby Cook",
-    "url": "http://willowtreeapps.com/wp-content/uploads/2015/11/headshot_abby_cook.jpg"
-  },
-  {
-    "name": "Abigale Howell",
-    "url": "http://willowtreeapps.com/wp-content/uploads/2015/07/headshot_abigale_howell.jpg"
-  },
-  {
-    "name": "Alborz Mesbahi",
-    "url": "http://willowtreeapps.com/wp-content/uploads/2015/11/headshot_alborz_mesbahi.jpg"
-  },
-  {
-    "name": "Alex Shafran",
-    "url": "http://willowtreeapps.com/wp-content/uploads/2014/12/headshot_alex_shafran.jpg"
-  }
-];
-
 var FlashcardContent = React.createClass({
 	loadEmployeesFromServer: function() {
 		$.ajax({
@@ -36,7 +13,9 @@ var FlashcardContent = React.createClass({
 		});
 	},
 	getInitialState: function() {
-	    return {data: []};
+	    return {
+	    	data: []
+	    };
 	},
 	componentDidMount: function() {
 		this.loadEmployeesFromServer();
@@ -51,23 +30,30 @@ var FlashcardContent = React.createClass({
 
   		if (name === correctAnswer) {
   			console.log("CORRECT");
+  			$("article span")[0].className = "name right";
   		} else {
   			console.log("INCORRECT");
+  			$("article span")[0].className = "name wrong";
   		}
+
+  		$(".notification")[0].className = "notification visible";
 
   		this.refs.name.value = '';
   		this.refs.answer.value = '';
   		
+  		$(window).keypress(function(e) {
+	       location.reload();
+  		});
+
   		return;
   	},
 	render: function () {
 		//choose random employee
 		var listOfEmployees = this.state.data;
 		var randomEmployee = listOfEmployees[Math.floor(Math.random() * listOfEmployees.length)];
-		console.log(listOfEmployees.length);
 		return (
-			<div className="flashcard">
-				<EmployeePicture employee={randomEmployee}/>
+			<div className="flashcard" id="face-wrapper">
+				<EmployeePicture employee={randomEmployee} style={this.state.pictureStyling}/>
 				<form className="flashcardForm" onSubmit={this.handleSubmit}>
 					<input type="text" placeholder="Enter Name" ref="name"/>
 					<input type="hidden" ref="answer" value={randomEmployee ? randomEmployee.name : ""} />
@@ -81,9 +67,10 @@ var FlashcardContent = React.createClass({
 var EmployeePicture = React.createClass({
 	render: function() {
 		return (
-			<div className="employee">
+			<article className="employee">
 				<img src={this.props.employee ? this.props.employee.url : ""} />
-			</div>
+				<span className="name hidden">{this.props.employee ? this.props.employee.name : ""}</span>
+			</article>
 		);
 	}
 });
